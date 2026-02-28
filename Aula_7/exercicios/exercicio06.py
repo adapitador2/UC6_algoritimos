@@ -21,6 +21,9 @@ dados["nome"] = input("nome: ")
 dados["idade"] = int(input("idade: "))
 dados["cidade"] = input("cidade: ")
 
-print (dados)
 for key, values in dados.items():
     print (key, ": ", values)
+
+# adcionar filtro de maiuscula
+# while para numero invalido 
+# data de nascimento para conta de confiração de idade
