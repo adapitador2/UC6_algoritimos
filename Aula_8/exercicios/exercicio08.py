@@ -7,7 +7,7 @@ for i in range(num):
     item = input("digite um item: ")
     lista.append(item)
 
-lista.sort()
+# lista.sort()
 
 print ("lista:")
 
