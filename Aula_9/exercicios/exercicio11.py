@@ -21,4 +21,9 @@ def resultado(num_media):
     else:
         print("reprovado")
 
+
 print(resultado(media))
+print(notas)
+
+# sumir com o none
+# input media minima
