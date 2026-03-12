@@ -20,4 +20,11 @@ json = reposta.json()
 print(json)
 print("nome: ",json["name"])
 print("status: ",json["status"])
+print("status: ",json["species"])
+print("status: ",json["type"])
 print("genero: ",json["gender"])
+print("status: ",json["origin"["name"]])
+print("status: ",json["location"])
+
+
+# name, status, species, type, gender, origin, location
