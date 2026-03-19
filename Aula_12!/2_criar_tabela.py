@@ -1,5 +1,4 @@
 import pandas
-# criar e adicionar itens da tabela
 
 nome1 = input("nome:")
 idade1 = int(input("idade:"))
@@ -11,11 +10,8 @@ dados = {
     "altura": [altura1]
 }
 
-
-excel = pandas.read_excel("Aula_12\planilha_excel.xlsx")
-
 # criar tabela excel
-# se rodar denovo subistitui o anterior
+# se rodar denovo subistitui todos os dados da tabela anterior
 
 excel = pandas.DataFrame(dados)
 excel.to_excel("Aula_12/planilha_excel.xlsx", index = False)
