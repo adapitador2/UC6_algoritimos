@@ -1,0 +1,1048 @@
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos incidunt perferendis quisquam molestiae, laborum tenetur, hic, commodi aliquid repellat facilis id iure! Velit vitae deserunt saepe quibusdam similique. Esse, magnam?
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python + PyMySQL — Guia Passo a Passo</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,800;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb;
+  --bg2: #ede9df;
+  --ink: #1a1714;
+  --ink2: #3d3830;
+  --muted: #8a8070;
+  --accent: #c94f1e;
+  --accent2: #2d6a4f;
+  --accent3: #1d4e89;
+  --code-bg: #1e1c18;
+  --code-text: #e8dfc8;
+  --keyword: #ff9f43;
+  --string: #a8e6a3;
+  --comment: #7a7060;
+  --func: #82cfff;
+  --number: #f7c59f;
+  --border: rgba(26,23,20,0.12);
+  --shadow: rgba(26,23,20,0.08);
+  --step-w: 42px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(245,242,235,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+}
+
+.nav-logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -0.3px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
+}
+
+.nav-links a:hover { color: var(--ink); }
+
+/* ─── HERO ─── */
+.hero {
+  padding: 80px 32px 60px;
+  max-width: 760px;
+  margin: 0 auto;
+  animation: fadeIn 0.7s ease both;
+}
+
+.hero-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-tag::after {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--ink2);
+  font-weight: 300;
+  max-width: 540px;
+  line-height: 1.75;
+  margin-bottom: 32px;
+}
+
+.prereq-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent2);
+  border-radius: 6px;
+  padding: 16px 20px;
+  font-size: 0.85rem;
+  color: var(--ink2);
+}
+
+.prereq-box strong { color: var(--accent2); font-weight: 500; }
+
+/* ─── LEGEND ─── */
+.legend {
+  max-width: 760px;
+  margin: 0 auto 56px;
+  padding: 0 32px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  animation: fadeIn 0.6s 0.2s ease both;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.leg-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.d-fn { background: var(--accent); }
+.d-met { background: var(--accent3); }
+.d-where { background: var(--accent2); }
+
+/* ─── MAIN ─── */
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 32px 100px;
+}
+
+/* ─── STEP ─── */
+.step {
+  display: grid;
+  grid-template-columns: var(--step-w) 1fr;
+  gap: 0 28px;
+  margin-bottom: 64px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.step:nth-child(1) { animation-delay: 0.1s; }
+.step:nth-child(2) { animation-delay: 0.2s; }
+.step:nth-child(3) { animation-delay: 0.3s; }
+.step:nth-child(4) { animation-delay: 0.4s; }
+.step:nth-child(5) { animation-delay: 0.5s; }
+.step:nth-child(6) { animation-delay: 0.6s; }
+
+.step-num {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.num-circle {
+  width: var(--step-w);
+  height: var(--step-w);
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: 'Fraunces', serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: -1px;
+  position: relative;
+  z-index: 1;
+}
+
+.step-line {
+  width: 1px;
+  flex: 1;
+  background: var(--border);
+  margin-top: 8px;
+  margin-bottom: -24px;
+}
+
+.step:last-child .step-line { display: none; }
+
+.step-content {
+  padding-bottom: 8px;
+}
+
+.step-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+}
+
+.step-intro {
+  font-size: 0.92rem;
+  color: var(--ink2);
+  font-weight: 300;
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+/* ─── CARDS: função / método / onde usar ─── */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.card {
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.card-head {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.card-fn {
+  background: rgba(201,79,30,0.07);
+  border: 1px solid rgba(201,79,30,0.2);
+}
+.card-fn .card-head { color: var(--accent); }
+
+.card-met {
+  background: rgba(29,78,137,0.07);
+  border: 1px solid rgba(29,78,137,0.2);
+}
+.card-met .card-head { color: var(--accent3); }
+
+.card-where {
+  background: rgba(45,106,79,0.07);
+  border: 1px solid rgba(45,106,79,0.2);
+}
+.card-where .card-head { color: var(--accent2); }
+
+.card p { color: var(--ink2); }
+
+.card code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.83em;
+  background: rgba(0,0,0,0.07);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* ─── CODE BLOCK ─── */
+.code-wrap {
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px 0;
+  box-shadow: 0 4px 24px var(--shadow);
+}
+
+.code-header {
+  background: #2a2720;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.code-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.code-dots span {
+  width: 11px; height: 11px;
+  border-radius: 50%;
+}
+
+.d1 { background: #ff5f57; }
+.d2 { background: #ffbd2e; }
+.d3 { background: #28ca41; }
+
+.code-filename {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: #6a6050;
+  letter-spacing: 0.5px;
+}
+
+pre {
+  background: var(--code-bg);
+  padding: 20px 24px;
+  overflow-x: auto;
+  line-height: 1.7;
+  font-size: 0.875rem;
+}
+
+code.block {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--code-text);
+  display: block;
+}
+
+/* syntax coloring */
+.kw  { color: var(--keyword); font-weight: 500; }
+.st  { color: var(--string); }
+.cm  { color: var(--comment); font-style: italic; }
+.fn  { color: var(--func); }
+.nm  { color: var(--number); }
+.pn  { color: #e8dfc8; }
+.hl  { background: rgba(201,79,30,0.18); display: inline-block; width: 100%; border-radius: 2px; }
+
+/* ─── CALLOUT ─── */
+.callout {
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--ink2);
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+.callout-warn {
+  background: rgba(255,159,67,0.1);
+  border: 1px solid rgba(255,159,67,0.3);
+}
+
+.callout-tip {
+  background: rgba(45,106,79,0.08);
+  border: 1px solid rgba(45,106,79,0.2);
+}
+
+.callout-danger {
+  background: rgba(201,79,30,0.09);
+  border: 1px solid rgba(201,79,30,0.25);
+}
+
+.callout strong { color: var(--ink); }
+
+/* ─── TABLE ─── */
+.table-wrap {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+}
+
+th {
+  background: var(--bg2);
+  padding: 10px 16px;
+  text-align: left;
+  font-weight: 500;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink2);
+  vertical-align: top;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(0,0,0,0.02); }
+
+td code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.83em;
+  background: rgba(0,0,0,0.06);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 48px 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border);
+  text-align: center;
+  padding: 32px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .nav-links { display: none; }
+  .hero, main { padding-left: 16px; padding-right: 16px; }
+  .legend { padding: 0 16px; }
+  :root { --step-w: 34px; }
+  .step { gap: 0 16px; }
+  pre { font-size: 0.78rem; padding: 14px 14px; }
+  h1 { font-size: 2rem; }
+}
+
+/* ─── COPY BUTTON ─── */
+.copy-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #9a9080;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+
+.copy-btn:hover { background: rgba(255,255,255,0.14); color: #e8dfc8; }
+.copy-btn.copied { color: #a8e6a3; border-color: #a8e6a3; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">py × mysql</span>
+  <ul class="nav-links">
+    <li><a href="#instalacao">Instalação</a></li>
+    <li><a href="#conexao">Conexão</a></li>
+    <li><a href="#cursor">Cursor</a></li>
+    <li><a href="#select">SELECT</a></li>
+    <li><a href="#escrita">INSERT / UPDATE</a></li>
+    <li><a href="#boas-praticas">Boas Práticas</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Guia Passo a Passo</div>
+  <h1>Python conectado ao seu <em>banco de dados</em></h1>
+  <p class="hero-desc">
+    Um guia completo e direto ao ponto. Cada passo explica <strong>o que</strong> é a função ou método, <strong>para que</strong> serve e <strong>onde</strong> você vai usar no seu código.
+  </p>
+  <div class="prereq-box">
+    <strong>✅ Pré-requisito:</strong> Você já tem o MySQL instalado, um banco de dados criado e pelo menos uma tabela. Só falta conectar o Python a ele.
+  </div>
+</section>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg-item"><span class="leg-dot d-fn"></span> O que é (função/módulo)</div>
+  <div class="leg-item"><span class="leg-dot d-met"></span> O que é (método)</div>
+  <div class="leg-item"><span class="leg-dot d-where"></span> Onde usar</div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 1 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="instalacao">
+  <div class="step-num">
+    <div class="num-circle">1</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Instalar o PyMySQL</h2>
+    <p class="step-intro">
+      Antes de qualquer coisa, você precisa instalar a biblioteca que faz o Python conversar com o MySQL. PyMySQL é um pacote externo — ele não vem com o Python por padrão.
+    </p>
+
+    <div class="cards">
+      <div class="card card-fn">
+        <div class="card-head">O que é</div>
+        <p><strong>PyMySQL</strong> é uma <em>biblioteca</em> (conjunto de código pronto) que implementa o protocolo de comunicação do MySQL. Ela traduz os comandos Python para algo que o MySQL Server entende — e vice-versa.</p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>Execute esse comando uma única vez no <strong>terminal</strong> (fora do Python). Após instalado, basta importar no seu script.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">terminal</span>
+        <button class="copy-btn" onclick="copyCode(this, 'pip install pymysql')">copiar</button>
+      </div>
+      <pre><code class="block"><span class="pn">pip install pymysql</span></code></pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>Se você usa <strong>ambientes virtuais</strong> (recomendado), ative o ambiente antes de instalar. Se usar <code>pip3</code> no seu sistema, substitua <code>pip</code> por <code>pip3</code>.</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">verificar_instalacao.py</span>
+        <button class="copy-btn" onclick="copyCode(this, 'import pymysql\nprint(pymysql.version_info)')">copiar</button>
+      </div>
+      <pre><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+<span class="fn">print</span><span class="pn">(</span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">version_info</span><span class="pn">)</span>  <span class="cm"># deve mostrar a versão instalada</span></code></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 2 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="conexao">
+  <div class="step-num">
+    <div class="num-circle">2</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Criar a Conexão</h2>
+    <p class="step-intro">
+      A conexão é a "ponte" entre o seu script Python e o banco de dados. Sem ela, nenhuma operação é possível. Você cria a conexão uma vez e a usa para todas as operações.
+    </p>
+
+    <div class="cards">
+      <div class="card card-fn">
+        <div class="card-head">O que é — pymysql.connect()</div>
+        <p>É uma <strong>função</strong> que abre uma conexão com o servidor MySQL. Ela recebe as credenciais e informações do banco e devolve um <strong>objeto de conexão</strong> que você guarda em uma variável.</p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>No <strong>início do script</strong>, antes de qualquer consulta ou modificação. Normalmente fica logo após os imports. Você usa essa variável de conexão durante toda a execução do programa.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">conectar.py</span>
+        <button class="copy-btn" onclick="copyBlock(this,'blk2')">copiar</button>
+      </div>
+      <pre id="blk2"><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+
+<span class="cm"># Cria a conexão com o banco de dados</span>
+<span class="pn">conexao = </span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(</span>
+    <span class="pn">host=</span><span class="st">"localhost"</span><span class="pn">,</span>        <span class="cm"># endereço do servidor (local = "localhost")</span>
+    <span class="pn">user=</span><span class="st">"seu_usuario"</span><span class="pn">,</span>     <span class="cm"># usuário do MySQL</span>
+    <span class="pn">password=</span><span class="st">"sua_senha"</span><span class="pn">,</span>   <span class="cm"># senha do MySQL</span>
+    <span class="pn">database=</span><span class="st">"nome_do_banco"</span><span class="pn">,</span><span class="cm"># banco que você já criou</span>
+    <span class="pn">port=</span><span class="nm">3306</span>                 <span class="cm"># porta padrão do MySQL (opcional)</span>
+<span class="pn">)</span>
+
+<span class="fn">print</span><span class="pn">(</span><span class="st">"Conexão estabelecida com sucesso!"</span><span class="pn">)</span>
+</code></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Parâmetro</th>
+            <th>O que significa</th>
+            <th>Exemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>host</code></td><td>Endereço do servidor MySQL</td><td><code>"localhost"</code> ou <code>"192.168.1.10"</code></td></tr>
+          <tr><td><code>user</code></td><td>Nome do usuário do MySQL</td><td><code>"root"</code></td></tr>
+          <tr><td><code>password</code></td><td>Senha do usuário</td><td><code>"minha_senha"</code></td></tr>
+          <tr><td><code>database</code></td><td>Nome do banco de dados a usar</td><td><code>"loja"</code></td></tr>
+          <tr><td><code>port</code></td><td>Porta do servidor (padrão: 3306)</td><td><code>3306</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Conexão aberta = recurso consumido.</strong> O MySQL tem um limite de conexões simultâneas. Sempre feche a conexão quando terminar com <code>conexao.close()</code>. Vamos ver uma forma elegante de fazer isso no Passo 6.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 3 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="cursor">
+  <div class="step-num">
+    <div class="num-circle">3</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Criar o Cursor</h2>
+    <p class="step-intro">
+      A conexão abre a porta com o banco — mas quem realmente <em>executa</em> os comandos SQL é o <strong>cursor</strong>. Pense nele como um "ponteiro" ou "caneta" que navega e escreve dentro do banco.
+    </p>
+
+    <div class="cards">
+      <div class="card card-met">
+        <div class="card-head">O que é — conexao.cursor()</div>
+        <p>É um <strong>método</strong> do objeto de conexão. Ele cria e devolve um <strong>objeto cursor</strong>. O cursor é quem vai receber seus comandos SQL (<code>SELECT</code>, <code>INSERT</code>, etc.) e executá-los.</p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>Logo após criar a conexão, <strong>antes de qualquer comando SQL</strong>. Em geral, você cria um cursor, executa as operações desejadas e depois fecha o cursor.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">cursor.py</span>
+        <button class="copy-btn" onclick="copyBlock(this,'blk3')">copiar</button>
+      </div>
+      <pre id="blk3"><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+
+<span class="pn">conexao = </span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(</span>
+    <span class="pn">host=</span><span class="st">"localhost"</span><span class="pn">, user=</span><span class="st">"root"</span><span class="pn">, password=</span><span class="st">"senha"</span><span class="pn">, database=</span><span class="st">"loja"</span>
+<span class="pn">)</span>
+
+<span class="cm"># Cria o cursor — versão simples (retorna tuplas)</span>
+<span class="pn">cursor = </span><span class="pn">conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">()</span>
+
+<span class="cm"># Cria o cursor — versão dicionário (retorna {"coluna": valor})</span>
+<span class="pn">cursor = </span><span class="pn">conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">(</span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">cursors</span><span class="pn">.</span><span class="fn">DictCursor</span><span class="pn">)</span>
+</code></pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>
+        <strong>Qual cursor usar?</strong><br>
+        • Cursor simples → resultados chegam como <code>(valor1, valor2)</code><br>
+        • <code>DictCursor</code> → resultados chegam como <code>{"nome": "João", "idade": 30}</code> — muito mais fácil de usar!
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 4 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="select">
+  <div class="step-num">
+    <div class="num-circle">4</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Ler Dados — SELECT</h2>
+    <p class="step-intro">
+      Agora sim vamos buscar dados do banco. O fluxo é sempre o mesmo: <strong>execute</strong> o SQL → <strong>fetch</strong> os resultados → use os dados.
+    </p>
+
+    <div class="cards">
+      <div class="card card-met">
+        <div class="card-head">O que é — cursor.execute()</div>
+        <p>É o método que <strong>envia o comando SQL</strong> para o MySQL executar. Ele não devolve os dados — apenas executa. Para pegar os resultados, você usa os métodos <code>fetch</code> logo depois.</p>
+      </div>
+      <div class="card card-met">
+        <div class="card-head">O que é — fetchall() / fetchone() / fetchmany()</div>
+        <p>
+          São métodos para <strong>buscar os resultados</strong> após um <code>execute()</code>:<br>
+          • <code>fetchall()</code> → traz <em>todos</em> os registros de uma vez (lista)<br>
+          • <code>fetchone()</code> → traz apenas o <em>próximo</em> registro (dicionário/tupla)<br>
+          • <code>fetchmany(n)</code> → traz os próximos <em>n</em> registros
+        </p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>Sempre que quiser <strong>consultar dados</strong>. Use <code>fetchall()</code> para listagens, <code>fetchone()</code> quando espera um único resultado (ex: busca por ID).</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">select.py</span>
+        <button class="copy-btn" onclick="copyBlock(this,'blk4')">copiar</button>
+      </div>
+      <pre id="blk4"><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+
+<span class="pn">conexao = </span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(</span>
+    <span class="pn">host=</span><span class="st">"localhost"</span><span class="pn">, user=</span><span class="st">"root"</span><span class="pn">, password=</span><span class="st">"senha"</span><span class="pn">, database=</span><span class="st">"loja"</span>
+<span class="pn">)</span>
+
+<span class="pn">cursor = </span><span class="pn">conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">(</span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">cursors</span><span class="pn">.</span><span class="fn">DictCursor</span><span class="pn">)</span>
+
+<span class="cm"># ── Buscar todos os registros ───────────────</span>
+<span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(</span><span class="st">"SELECT * FROM clientes"</span><span class="pn">)</span>
+<span class="pn">todos = cursor</span><span class="pn">.</span><span class="fn">fetchall</span><span class="pn">()</span>
+
+<span class="kw">for</span> <span class="pn">cliente</span> <span class="kw">in</span> <span class="pn">todos:</span>
+    <span class="fn">print</span><span class="pn">(cliente[</span><span class="st">"nome"</span><span class="pn">], cliente[</span><span class="st">"email"</span><span class="pn">])</span>
+
+<span class="cm"># ── Buscar um único registro por ID ────────</span>
+<span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(</span><span class="st">"SELECT * FROM clientes WHERE id = 1"</span><span class="pn">)</span>
+<span class="pn">cliente = cursor</span><span class="pn">.</span><span class="fn">fetchone</span><span class="pn">()</span>
+<span class="fn">print</span><span class="pn">(cliente)  </span><span class="cm"># {'id': 1, 'nome': 'Maria', 'email': '...'}</span>
+
+<span class="cm"># ── Buscar com filtro dinâmico (SEGURO) ────</span>
+<span class="pn">nome_busca = </span><span class="st">"João"</span>
+<span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(</span><span class="st">"SELECT * FROM clientes WHERE nome = %s"</span><span class="pn">, (nome_busca,))</span>
+<span class="pn">resultado = cursor</span><span class="pn">.</span><span class="fn">fetchall</span><span class="pn">()</span>
+
+<span class="pn">conexao</span><span class="pn">.</span><span class="fn">close</span><span class="pn">()</span>
+</code></pre>
+    </div>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">🚫</span>
+      <div>
+        <strong>NUNCA faça isso:</strong><br>
+        <code>cursor.execute("SELECT * FROM clientes WHERE nome = '" + nome + "'")</code><br><br>
+        Isso abre brecha para <strong>SQL Injection</strong> — um ataque que pode destruir seu banco. Sempre use <code>%s</code> com uma tupla de valores separada.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 5 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="escrita">
+  <div class="step-num">
+    <div class="num-circle">5</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Escrever Dados — INSERT, UPDATE, DELETE</h2>
+    <p class="step-intro">
+      Operações que <em>modificam</em> o banco seguem um passo extra: o <strong>commit</strong>. Sem ele, as mudanças ficam pendentes e são descartadas quando a conexão fecha.
+    </p>
+
+    <div class="cards">
+      <div class="card card-met">
+        <div class="card-head">O que é — conexao.commit()</div>
+        <p>É o método que <strong>confirma e salva permanentemente</strong> as mudanças feitas no banco. É o equivalente a clicar em "Salvar". Deve ser chamado após todo <code>INSERT</code>, <code>UPDATE</code> ou <code>DELETE</code>.</p>
+      </div>
+      <div class="card card-met">
+        <div class="card-head">O que é — conexao.rollback()</div>
+        <p>Desfaz todas as operações feitas <strong>desde o último commit</strong>. Use dentro de um bloco <code>except</code> para garantir que dados inválidos não sejam salvos em caso de erro.</p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>Chame <code>commit()</code> após cada operação de escrita bem-sucedida. Chame <code>rollback()</code> dentro do bloco <code>except</code> para reverter em caso de falha.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">escrita.py</span>
+        <button class="copy-btn" onclick="copyBlock(this,'blk5')">copiar</button>
+      </div>
+      <pre id="blk5"><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+
+<span class="pn">conexao = </span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(</span>
+    <span class="pn">host=</span><span class="st">"localhost"</span><span class="pn">, user=</span><span class="st">"root"</span><span class="pn">, password=</span><span class="st">"senha"</span><span class="pn">, database=</span><span class="st">"loja"</span>
+<span class="pn">)</span>
+<span class="pn">cursor = conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">()</span>
+
+<span class="kw">try</span><span class="pn">:</span>
+    <span class="cm"># ── INSERT: adicionar um novo registro ──────</span>
+    <span class="pn">sql_insert = </span><span class="st">"INSERT INTO clientes (nome, email) VALUES (%s, %s)"</span>
+    <span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(sql_insert, (</span><span class="st">"Ana Lima"</span><span class="pn">, </span><span class="st">"ana@email.com"</span><span class="pn">))</span>
+    <span class="pn">conexao</span><span class="pn">.</span><span class="fn">commit</span><span class="pn">()</span>  <span class="cm"># ← confirma o INSERT</span>
+    <span class="fn">print</span><span class="pn">(</span><span class="st">"Inserido com sucesso! ID:"</span><span class="pn">, cursor</span><span class="pn">.</span><span class="fn">lastrowid</span><span class="pn">)</span>
+
+    <span class="cm"># ── UPDATE: atualizar um registro existente ─</span>
+    <span class="pn">sql_update = </span><span class="st">"UPDATE clientes SET email = %s WHERE id = %s"</span>
+    <span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(sql_update, (</span><span class="st">"novo@email.com"</span><span class="pn">, </span><span class="nm">1</span><span class="pn">))</span>
+    <span class="pn">conexao</span><span class="pn">.</span><span class="fn">commit</span><span class="pn">()</span>  <span class="cm"># ← confirma o UPDATE</span>
+    <span class="fn">print</span><span class="pn">(</span><span class="st">"Linhas afetadas:"</span><span class="pn">, cursor</span><span class="pn">.</span><span class="fn">rowcount</span><span class="pn">)</span>
+
+    <span class="cm"># ── DELETE: remover um registro ─────────────</span>
+    <span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(</span><span class="st">"DELETE FROM clientes WHERE id = %s"</span><span class="pn">, (</span><span class="nm">5</span><span class="pn">,))</span>
+    <span class="pn">conexao</span><span class="pn">.</span><span class="fn">commit</span><span class="pn">()</span>  <span class="cm"># ← confirma o DELETE</span>
+
+<span class="kw">except</span> <span class="fn">Exception</span> <span class="kw">as</span> <span class="pn">erro:</span>
+    <span class="pn">conexao</span><span class="pn">.</span><span class="fn">rollback</span><span class="pn">()</span>  <span class="cm"># ← desfaz tudo se algo deu errado</span>
+    <span class="fn">print</span><span class="pn">(</span><span class="st">"Erro! Operação revertida:"</span><span class="pn">, erro)</span>
+
+<span class="kw">finally</span><span class="pn">:</span>
+    <span class="pn">cursor</span><span class="pn">.</span><span class="fn">close</span><span class="pn">()</span>
+    <span class="pn">conexao</span><span class="pn">.</span><span class="fn">close</span><span class="pn">()</span>
+</code></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Atributo do cursor</th><th>O que retorna</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>cursor.lastrowid</code></td><td>ID do último registro inserido pelo INSERT</td></tr>
+          <tr><td><code>cursor.rowcount</code></td><td>Nº de linhas afetadas pelo último UPDATE ou DELETE</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- STEP 6 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="step" id="boas-praticas">
+  <div class="step-num">
+    <div class="num-circle">6</div>
+    <div class="step-line"></div>
+  </div>
+  <div class="step-content">
+    <h2 class="step-title">Boas Práticas — Código Profissional</h2>
+    <p class="step-intro">
+      Agora que você já sabe o básico, veja como organizar seu código para que ele seja seguro, legível e fácil de manter.
+    </p>
+
+    <div class="cards">
+      <div class="card card-fn">
+        <div class="card-head">O que é — with (Context Manager)</div>
+        <p>A instrução <code>with</code> garante que recursos (conexão, cursor) sejam fechados automaticamente — mesmo se um erro ocorrer. Elimina a necessidade de chamar <code>.close()</code> manualmente.</p>
+      </div>
+      <div class="card card-where">
+        <div class="card-head">Onde usar</div>
+        <p>Substitua o padrão manual de abrir/fechar conexão. Use <code>with pymysql.connect(...) as conexao:</code> e o Python cuida do fechamento por você.</p>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-header">
+        <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+        <span class="code-filename">profissional.py</span>
+        <button class="copy-btn" onclick="copyBlock(this,'blk6')">copiar</button>
+      </div>
+      <pre id="blk6"><code class="block"><span class="kw">import</span> <span class="fn">pymysql</span>
+
+<span class="cm"># ── Configuração centralizada ────────────────</span>
+<span class="pn">DB_CONFIG = {</span>
+    <span class="st">"host"</span><span class="pn">: </span><span class="st">"localhost"</span><span class="pn">,</span>
+    <span class="st">"user"</span><span class="pn">: </span><span class="st">"root"</span><span class="pn">,</span>
+    <span class="st">"password"</span><span class="pn">: </span><span class="st">"senha"</span><span class="pn">,</span>
+    <span class="st">"database"</span><span class="pn">: </span><span class="st">"loja"</span><span class="pn">,</span>
+    <span class="st">"cursorclass"</span><span class="pn">: </span><span class="fn">pymysql</span><span class="pn">.</span><span class="fn">cursors</span><span class="pn">.</span><span class="fn">DictCursor</span>
+<span class="pn">}</span>
+
+<span class="cm"># ── Função reutilizável para buscar clientes ─</span>
+<span class="kw">def</span> <span class="fn">buscar_clientes</span><span class="pn">():</span>
+    <span class="kw">with</span> <span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(**DB_CONFIG)</span> <span class="kw">as</span> <span class="pn">conexao:</span>
+        <span class="kw">with</span> <span class="pn">conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">()</span> <span class="kw">as</span> <span class="pn">cursor:</span>
+            <span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(</span><span class="st">"SELECT * FROM clientes"</span><span class="pn">)</span>
+            <span class="kw">return</span> <span class="pn">cursor</span><span class="pn">.</span><span class="fn">fetchall</span><span class="pn">()</span>
+    <span class="cm"># conexão e cursor fechados automaticamente aqui ✅</span>
+
+<span class="cm"># ── Função reutilizável para inserir ─────────</span>
+<span class="kw">def</span> <span class="fn">inserir_cliente</span><span class="pn">(nome, email):</span>
+    <span class="kw">with</span> <span class="fn">pymysql</span><span class="pn">.</span><span class="fn">connect</span><span class="pn">(**DB_CONFIG)</span> <span class="kw">as</span> <span class="pn">conexao:</span>
+        <span class="kw">with</span> <span class="pn">conexao</span><span class="pn">.</span><span class="fn">cursor</span><span class="pn">()</span> <span class="kw">as</span> <span class="pn">cursor:</span>
+            <span class="pn">sql = </span><span class="st">"INSERT INTO clientes (nome, email) VALUES (%s, %s)"</span>
+            <span class="pn">cursor</span><span class="pn">.</span><span class="fn">execute</span><span class="pn">(sql, (nome, email))</span>
+        <span class="pn">conexao</span><span class="pn">.</span><span class="fn">commit</span><span class="pn">()</span>
+        <span class="fn">print</span><span class="pn">(</span><span class="st">f"Cliente </span><span class="pn">{nome}</span><span class="st"> inserido!"</span><span class="pn">)</span>
+
+<span class="cm"># ── Usando as funções ────────────────────────</span>
+<span class="pn">clientes = </span><span class="fn">buscar_clientes</span><span class="pn">()</span>
+<span class="kw">for</span> <span class="pn">c</span> <span class="kw">in</span> <span class="pn">clientes:</span>
+    <span class="fn">print</span><span class="pn">(c[</span><span class="st">"nome"</span><span class="pn">])</span>
+
+<span class="fn">inserir_cliente</span><span class="pn">(</span><span class="st">"Carlos Silva"</span><span class="pn">, </span><span class="st">"carlos@email.com"</span><span class="pn">)</span>
+</code></pre>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">🔐</span>
+      <div>
+        <strong>Dica extra: proteja suas credenciais.</strong><br>
+        Nunca coloque senha direto no código se for compartilhar. Use um arquivo <code>.env</code>:<br>
+        <br>
+        1. Instale: <code>pip install python-dotenv</code><br>
+        2. Crie o arquivo <code>.env</code>: <code>DB_PASSWORD=sua_senha</code><br>
+        3. No Python: <code>from dotenv import load_dotenv; import os; load_dotenv()</code><br>
+        4. Use: <code>password=os.getenv("DB_PASSWORD")</code>
+      </div>
+    </div>
+
+    <!-- REFERÊNCIA FINAL -->
+    <div class="divider">Resumo dos métodos</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Método / Função</th>
+            <th>Onde chamar</th>
+            <th>O que faz</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>pymysql.connect()</code></td><td>Início do script</td><td>Abre conexão com o banco</td></tr>
+          <tr><td><code>conexao.cursor()</code></td><td>Após connect()</td><td>Cria o executor de SQL</td></tr>
+          <tr><td><code>cursor.execute()</code></td><td>Antes de qualquer fetch</td><td>Envia o comando SQL</td></tr>
+          <tr><td><code>cursor.fetchall()</code></td><td>Após execute() de SELECT</td><td>Retorna todos os registros</td></tr>
+          <tr><td><code>cursor.fetchone()</code></td><td>Após execute() de SELECT</td><td>Retorna o próximo registro</td></tr>
+          <tr><td><code>conexao.commit()</code></td><td>Após INSERT/UPDATE/DELETE</td><td>Salva as mudanças</td></tr>
+          <tr><td><code>conexao.rollback()</code></td><td>No bloco except</td><td>Desfaz mudanças não salvas</td></tr>
+          <tr><td><code>cursor.close()</code></td><td>Após usar o cursor</td><td>Libera o cursor</td></tr>
+          <tr><td><code>conexao.close()</code></td><td>Ao final do script</td><td>Fecha a conexão</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+</main>
+
+<footer>
+  python × pymysql — guia passo a passo &nbsp;·&nbsp; feito para quem já tem o banco pronto
+</footer>
+
+<script>
+function copyCode(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyBlock(btn, id) {
+  const el = document.getElementById(id);
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copiado!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Animate steps on scroll
+const steps = document.querySelectorAll('.step');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+steps.forEach(s => {
+  s.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  obs.observe(s);
+});
+</script>
+</body>
+</html>

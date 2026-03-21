@@ -14,16 +14,8 @@ cursor = conexao.cursor(pymysql.cursors.DictCursor)
 
 # selecionr todos 
 
-# cursor.execute("select * from clientes")
-# dados_cli = cursor.fetchall()
+cursor.execute("select * from clientes")
+dados_cli = cursor.fetchall()
 
-# for clientes in dados_cli:
-#     print(clientes["nome"], clientes["email"],  clientes["data_cadastro"], clientes["telefone"])
-
-# selecionar 1
-
-cursor.execute("select * from clientes where id_cliente = 1")
-
-dados_cli = cursor.fetchone()
-
-print(dados_cli)
+for clientes in dados_cli:
+    print(clientes["nome"], clientes["email"],  clientes["data_cadastro"], clientes["telefone"])

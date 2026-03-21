@@ -11,19 +11,11 @@ conexao = pymysql.connect(
 
 cursor = conexao.cursor(pymysql.cursors.DictCursor)
 
+# busca dinamica
+nome_cli = input("digete um nome: ") #like usado para chamar semelhantes e "%" para ignorar depois
 
-# selecionr todos 
+cursor.execute("select * from clientes where nome like %s", (nome_cli),) #case sensitive e nome completo 
 
-# cursor.execute("select * from clientes")
-# dados_cli = cursor.fetchall()
-
-# for clientes in dados_cli:
-#     print(clientes["nome"], clientes["email"],  clientes["data_cadastro"], clientes["telefone"])
-
-# selecionar 1
-
-cursor.execute("select * from clientes where id_cliente = 1")
-
-dados_cli = cursor.fetchone()
+dados_cli = cursor.fetchall()
 
 print(dados_cli)
