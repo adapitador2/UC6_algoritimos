@@ -1,7 +1,7 @@
 import pandas
-print(pandas.read_excel("Aula_12\planilha_excel.xlsx"))
+print(pandas.read_excel("Aula_12!\planilha_excel.xlsx"))
 
-excel = pandas.read_excel("Aula_12\planilha_excel.xlsx")
+# excel = pandas.read_excel("Aula_12!\planilha_excel.xlsx")
 
 # criar e adicionar itens da tabela
 
@@ -15,14 +15,15 @@ dados = {
     "altura": [altura1]
 }
 # adicionar na tabela excel
-# 
-adicao_excel = pandas.read_excel("Aula_12\planilha_excel.xlsx")
+
+adicao_excel = pandas.read_excel("Aula_12!\planilha_excel.xlsx")
 ultima_linha = len(adicao_excel)
+print(ultima_linha)
 
 adicao_excel.loc[ultima_linha, "nome"] = dados["nome"]
 adicao_excel.loc[ultima_linha, "idade"] = dados["idade"]
 adicao_excel.loc[ultima_linha, "altura"] = dados["altura"]
 
-adicao_excel.to_excel("Aula_12\planilha_excel.xlsx", index = False)
+adicao_excel.to_excel("Aula_12!\planilha_excel.xlsx", index = False)
 
-print(pandas.read_excel("Aula_12\planilha_excel.xlsx"))
+print(pandas.read_excel("Aula_12!\planilha_excel.xlsx"))

@@ -1,7 +1,7 @@
 import pandas
-print(pandas.read_excel("Aula_12\planilha_excel.xlsx"))
+print(pandas.read_excel("Aula_12!\planilha_excel.xlsx"))
 
-excel = pandas.read_excel("Aula_12\planilha_excel.xlsx")
+excel = pandas.read_excel("Aula_12!\planilha_excel.xlsx")
 
 # alterar linha (altera e salva)
 
@@ -22,6 +22,6 @@ excel.loc[alterar, "nome"] = dados["nome"]
 excel.loc[alterar, "idade"] = dados["idade"]
 excel.loc[alterar, "altura"] = dados["altura"]
 
-excel.to_excel("Aula_12\planilha_excel.xlsx", index = False)
+excel.to_excel("Aula_12!\planilha_excel.xlsx", index = False)
 
-print(pandas.read_excel("Aula_12\planilha_excel.xlsx"))
+print(pandas.read_excel("Aula_12!\planilha_excel.xlsx"))
