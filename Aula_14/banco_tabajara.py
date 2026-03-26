@@ -58,12 +58,61 @@ else:
 
     elif (menu == 2):
         print("dit=gte os dados para acessar a sua conta")
+        # num = int(input("numro da linha da cont(teste): "))
         cpf = int(input("cpf: "))
         id_conta = int(input("numero da conta: "))
 
         excel = pandas.read_excel("Aula_14/banco_tabajara.xlsx")
 
-        print(excel[cpf])
+        login = excel[(excel['cpf'] == cpf) & (excel['id_conta'] == id_conta)]
+        
+        print(login)
+        
 
-    else:
-        print("numero invalido")
+
+
+
+
+
+
+
+"""
+        cpft = excel.loc[cpf:"cpf", "cpf"]
+        id_contat = excel.loc[cpf:"cpf", "id_conta"]
+
+        if (id_conta == id_contat and cpf == cpft):
+        #     print(excel.loc[cpf:"cpf",])
+
+            print("1 para sacar\n2 para depositar\n3paara consultar")
+            menu2 = int(input("gigite o umeor desejado"))
+
+
+            if (menu2 ==1):
+                valor_saque = float(input("digite quanto deseja sacar"))
+                extrato = excel.loc[extratoconta]
+
+                if (valor_saque >= 0):
+                    if (valor_saque <= extrato):
+                        print("saque concluido")
+                        # subitrair valor saque do extrato
+
+                    else:
+                        print("pobre")
+
+                else:
+                    print("numero invalido")
+
+            elif (menu2 ==2):
+                valor_deposito = float(input("digite o valor depositado"))
+                extrato = excel.loc[extratoconta]
+
+
+
+
+
+
+        
+        else:
+            print("errado / conta nao existe")
+"""
+
