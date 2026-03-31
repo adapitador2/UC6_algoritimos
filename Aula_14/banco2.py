@@ -1,9 +1,7 @@
 import pandas
-import os
-
 
 try:
-    pandas.read_excel("Aula_14/banco2.xlsx")
+    pandas.read_excel("Aula_14/banco2.xlsx",dtype={'extrato': float})
 except:
     dados = {
     "id_conta":     [""],
@@ -11,11 +9,11 @@ except:
     "cpf":          [""],
     "tipo_conta":   [""],
     "agencia":      [""],
-    "extrato":      [""]
+    "extrato":      [""]                                                                # transformar extrato em float
     }
 
     excel = pandas.DataFrame(dados)
-    excel.to_excel("Aula_14/banco2.xlsx", index = False)
+    excel.to_excel("Aula_14/banco2.xlsx", index = False, dtype={'extrato': float})
 
 while True:
     try:
@@ -32,7 +30,7 @@ if (menu == 1):                                                                 
 
     id_conta =      ul + 1
     agencia =       ul + 401
-    extrato =       0
+    extrato =       2000
 
     print("para criar sua conta precisamos de: ")
     nome =          input("nome: ")
@@ -55,7 +53,7 @@ if (menu == 1):                                                                 
             break
 
         else:
-            ("NUMERO INVALIDO")                                                          # nao vai sapoha
+            print("NUMERO INVALIDO")
 
 
 
@@ -82,7 +80,7 @@ elif (menu == 2):
     cpf = int(input("cpf: "))
     id_conta = int(input("numero da conta: "))
 
-    excel = pandas.read_excel("Aula_14/banco2.xlsx")
+    excel = pandas.read_excel("Aula_14/banco2.xlsx",dtype={'extrato': float})
 
     login = excel[(excel['cpf'] == cpf) & (excel['id_conta'] == id_conta)]
 
@@ -95,12 +93,66 @@ elif (menu == 2):
             print(d, ": ", login[f"{d}"].values[0])
         
 
+        while True:
         
-        print("digite:\n1 para consultar saldo\ndigite 2 para saque\n3 para deposito")
-        menu2 = int(input("digite o numero desejado"))
-
-        if (menu2 == 1):
-            print("seu saldo atual é: ", login["extrato"].values[0])
+            print("digite:\n1 para consultar saldo\n2 para saque\n3 para deposito")
+            menu2 = int(input("digite o numero desejado: "))
 
 
+            if (menu2 == 1):
+                print("seu saldo atual é: R$", login["extrato"].values[0])
+                break
 
+            elif (menu2 == 2):
+                saque = float(input("quanto deseja sacar?: "))
+
+
+                if (saque < 0) or (saque > login["extrato"].values[0]):
+                    print("valor invalido")
+
+                else:
+                    if (login["tipo_conta"].values[0] == "corrente"): #5%
+                        taxa = saque * 0.05
+                        extrato = (login["extrato"].values[0] - saque) - taxa
+
+                        excel.loc[login.index[0], "extrato"] = extrato
+                        excel.to_excel("Aula_14/banco2.xlsx", index = False)
+
+                    elif (login["tipo_conta"].values[0] == "salario"): #2%
+                        taxa = saque * 0.02
+                        extrato = (login["extrato"].values[0] - saque) - taxa
+
+                        excel.loc[login.index[0], "extrato"] = extrato
+                        excel.to_excel("Aula_14/banco2.xlsx", index = False)
+
+                    else: #0%
+                        extrato = login["extrato"].values[0] - saque
+
+                        excel.loc[login.index[0], "extrato"] = extrato
+                        excel.to_excel("Aula_14/banco2.xlsx", index = False)
+                    
+                    break
+
+
+
+            elif (menu2 == 3):
+                deposito = float(input("quanto deseja depositar?: "))
+                
+                if (deposito < 0):
+                    print("valor invalido")
+                
+                else:
+                    extrato = login["extrato"].values[0] + deposito
+                    print(extrato)
+
+                    excel.loc[login.index[0], "extrato"] = extrato
+                    excel.to_excel("Aula_14/banco2.xlsx", index = False)
+                    break
+
+            else:
+                print("NUMERO INVALIDO")
+
+
+
+            # while True:
+            #     if (saque > 0):
