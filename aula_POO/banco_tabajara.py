@@ -34,11 +34,21 @@ if (menu == 1):
         else:
             print("NUMERO INVALIDO")
 
-    dados_cli = bababu(id_conta, nome,  cpf, tipo_conta, agencia, extrato)
+    cliente_objeto = bababu(id_conta, nome,  cpf, tipo_conta, agencia, extrato)
 
-    print(dados_cli)
+    print(cliente_objeto)
 
-    excel = pandas.DataFrame(dados_cli)
+    cliente_dicionario = {
+        "id_conta":         [cliente_objeto.id_conta],
+        "nome":             [cliente_objeto.nome],
+        "cpf":              [cliente_objeto.cpf],
+        "tipo_conta":       [cliente_objeto.tipo_conta],
+        "agencia":          [cliente_objeto.agencia],
+        "extrato":          [cliente_objeto.extrato]
+    }
+
+
+    excel = pandas.DataFrame(cliente_dicionario)
     excel.to_excel(caminho, index = False)
 
 elif (menu == 2):

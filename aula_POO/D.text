@@ -1,0 +1,6 @@
+
+dados_cli = bababu(1, "jaoo", 123, "sim", 2, 1234567890)
+
+print(dados_cli)
+
+    :)
