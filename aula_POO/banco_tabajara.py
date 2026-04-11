@@ -1,5 +1,7 @@
 import pandas
+import os
 from Cliente import bababu
+from criar_conta import bububa
 
 caminho = "clientes_banco_tbj.xlsx"
 
@@ -11,10 +13,6 @@ if (menu == 1):
 
     nome =          input("nome: ")
     cpf =           int(input("cpf: "))
-
-    id_conta =      0
-    agencia =       400
-    extrato =       0
 
     while True:
         tipo_conta = int(input("tipo de conta: "))
@@ -34,22 +32,37 @@ if (menu == 1):
         else:
             print("NUMERO INVALIDO")
 
-    cliente_objeto = bababu(id_conta, nome,  cpf, tipo_conta, agencia, extrato)
-
-    print(cliente_objeto)
-
-    cliente_dicionario = {
-        "id_conta":         [cliente_objeto.id_conta],
-        "nome":             [cliente_objeto.nome],
-        "cpf":              [cliente_objeto.cpf],
-        "tipo_conta":       [cliente_objeto.tipo_conta],
-        "agencia":          [cliente_objeto.agencia],
-        "extrato":          [cliente_objeto.extrato]
-    }
 
 
-    excel = pandas.DataFrame(cliente_dicionario)
-    excel.to_excel(caminho, index = False)
+    # try:
+    #     leitura_excel = pandas.read_excel(caminho)
+    # except:
+    #     leitura_excel = pandas.DataFrame()
+
+    #     conta = bububa(nome, cpf, tipo_conta)
+
+    #     salvar = conta.salvar_dados()
+
+
+    if os.path.exists (caminho):
+        print("ebaaa")
+        leitura_excel = pandas.read_excel(caminho)
+
+    else:
+        print("bah")
+
+        leitura_excel = pandas.DataFrame()
+
+        conta = bububa(nome, cpf, tipo_conta)
+
+        novo_dado = conta.salvar_dados()
+
+
+    leitura_excel.to_excel(caminho, index = 0)
+
+
+
+
 
 elif (menu == 2):
     print(":()")                                                                                                         
