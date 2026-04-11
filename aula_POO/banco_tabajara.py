@@ -56,6 +56,7 @@ if (menu == 1):
         conta = bububa(nome, cpf, tipo_conta)
 
         novo_dado = conta.salvar_dados()
+        leitura_excel = pandas.concat([leitura_excel, novo_dado], ignore_index=True)
 
 
     leitura_excel.to_excel(caminho, index = 0)
