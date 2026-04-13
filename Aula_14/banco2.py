@@ -151,8 +151,5 @@ elif (menu == 2):
 
             else:
                 print("NUMERO INVALIDO")
-
-
-
-            # while True:
-            #     if (saque > 0):
+else:
+    print(":)")
